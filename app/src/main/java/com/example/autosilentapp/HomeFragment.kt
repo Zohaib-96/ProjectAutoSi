@@ -1,20 +1,15 @@
 package com.example.autosilentapp
 
-import SilentModeReceiver
-import android.app.AlarmManager
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.graphics.Canvas
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -30,8 +25,6 @@ import com.example.autosilentapp.databinding.FragmentHomeBinding
 import com.google.gson.Gson
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.*
 
 
 class HomeFragment : Fragment(), TimeAdapter.OnTimeClickListener {
@@ -53,7 +46,9 @@ class HomeFragment : Fragment(), TimeAdapter.OnTimeClickListener {
         swipeToDelete()
 
         lifecycleScope.launch {
-
+            val time = database.TimeDao().getRecentTime()
+            val alarmManager = MyAlarmManager(requireContext())
+            alarmManager.scheduleAlarms(time)
         }
         return binding.root
     }
@@ -126,7 +121,7 @@ class HomeFragment : Fragment(), TimeAdapter.OnTimeClickListener {
     override fun onResume() {
         super.onResume()
         val nm = context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !nm.isNotificationPolicyAccessGranted) {
+        if (!nm.isNotificationPolicyAccessGranted) {
             val intent = Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
             startActivity(intent)
         }
