@@ -45,11 +45,6 @@ class HomeFragment : Fragment(), TimeAdapter.OnTimeClickListener {
         bindRecycleViewAndAdapter()
         swipeToDelete()
 
-        lifecycleScope.launch {
-            val time = database.TimeDao().getRecentTime()
-            val alarmManager = MyAlarmManager(requireContext())
-            alarmManager.scheduleAlarms(time)
-        }
         return binding.root
     }
 

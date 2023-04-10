@@ -11,19 +11,18 @@ class MyAlarmManager(private val context: Context) {
 
     private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-    fun scheduleAlarms(time: TimeEntities?) { // Retrieve the TimeData from the Room database
-        if (time != null) {
-            scheduleSilentAlarm(time.startTime) // Schedule the silent alarm
-            scheduleRingModeAlarm(time.endTime) // Schedule the ring mode alarm
-            Log.d("checkTime" , "start time  ----${time.startTime}")
-            Log.d("checkTime" , "end time -----${time.endTime}")
+    fun scheduleAlarms(startTime: String, endTime: String) { // Retrieve the TimeData from the Room database
+        if (startTime != null) {
+            scheduleSilentAlarm(startTime) // Schedule the silent alarm
+            scheduleRingModeAlarm(endTime) // Schedule the ring mode alarm
+            Log.d("checkTime" , "start time  ----${startTime}")
+            Log.d("checkTime" , "end time -----${endTime}")
 
         }
     }
-
     private fun scheduleSilentAlarm(startTime: String) {
         val startTimeMillis = getTimeInMillis(startTime)
-        val requestCode = getTimeInMillis(startTime).toInt()
+        val requestCode = startTime.hashCode()
         val silentIntent = Intent(context, SilentModeReceiver::class.java).apply {
             action = "com.example.autosilentapp.ACTION_SILENT_MODE"
         }
@@ -35,17 +34,16 @@ class MyAlarmManager(private val context: Context) {
         )
         Log.d("checkTime" , "start time Milli -------- $startTimeMillis")
 
-        alarmManager.setRepeating(
+        alarmManager.setExact(
             AlarmManager.RTC_WAKEUP,
             startTimeMillis,
-            AlarmManager.INTERVAL_DAY,
             pendingIntent
         )
     }
 
     private fun scheduleRingModeAlarm(endTime: String) {
         val endTimeMillis = getTimeInMillis(endTime)
-        val requestCode = getTimeInMillis(endTime).toInt()
+        val requestCode = endTime.hashCode()
         val ringModeIntent = Intent(context, SilentModeReceiver::class.java).apply {
             action = "com.example.autosilentapp.ACTION_RING_MODE"
         }
@@ -57,17 +55,17 @@ class MyAlarmManager(private val context: Context) {
         )
         Log.d("checkTime" , "end time Milli ----- $endTimeMillis")
 
-        alarmManager.setRepeating(
+        alarmManager.setExact(
             AlarmManager.RTC_WAKEUP,
             endTimeMillis,
-            AlarmManager.INTERVAL_DAY,
             pendingIntent
         )
     }
 
     private fun getTimeInMillis(timeString: String): Long {
-        val sdf = SimpleDateFormat("hh:mm", Locale.getDefault())
-        val time = sdf.parse(timeString)
+        val sdf = SimpleDateFormat("yyyy-MM-dd hh:mm a", Locale.getDefault())
+        val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+        val time = sdf.parse("$currentDate $timeString")
         val calendar = Calendar.getInstance()
         calendar.time = time
         if (calendar.timeInMillis < System.currentTimeMillis()) {

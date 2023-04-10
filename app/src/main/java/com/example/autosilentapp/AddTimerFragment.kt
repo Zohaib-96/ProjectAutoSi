@@ -1,4 +1,5 @@
 package com.example.autosilentapp
+
 import android.app.AlertDialog
 import android.app.TimePickerDialog
 import android.os.Bundle
@@ -12,9 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.example.autosilentapp.databinding.FragmentAddTimerBinding
 import com.google.gson.Gson
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.*
 
 
@@ -52,7 +51,7 @@ class AddTimerFragment : Fragment() {
         val minute = c.get(Calendar.MINUTE)
 
         // date picker dialog
-        val timeSetListener = TimePickerDialog.OnTimeSetListener { _,  hour, min ->
+        val timeSetListener = TimePickerDialog.OnTimeSetListener { _, hour, min ->
             c.set(Calendar.HOUR_OF_DAY, hour)
             c.set(Calendar.MINUTE, min)
 
@@ -86,7 +85,6 @@ class AddTimerFragment : Fragment() {
                 val jsonTime = arguments?.getString("time")
                 val time = Gson().fromJson(jsonTime, TimeEntities::class.java)
 
-
                 if (arguments?.containsKey("time") == true) {
                     lifecycleScope.launch {
                         database.TimeDao()
@@ -94,7 +92,14 @@ class AddTimerFragment : Fragment() {
                     }
                 } else {
                     lifecycleScope.launch {
-                        database.TimeDao().insertTime(TimeEntities(0, getStartTime, getEndTime))
+                        val alarmManager = MyAlarmManager(requireContext())
+                        database.TimeDao().insertTime(
+                            TimeEntities(
+                                startTime = getStartTime,
+                                endTime = getEndTime
+                            )
+                        )
+                        alarmManager.scheduleAlarms(getStartTime,getEndTime)
                     }
                 }
 
