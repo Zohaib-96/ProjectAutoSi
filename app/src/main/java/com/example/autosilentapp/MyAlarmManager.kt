@@ -9,6 +9,7 @@ import java.util.*
 
 class MyAlarmManager(private val context: Context) {
 
+
     private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
     fun scheduleAlarms(startTime: String, endTime: String) { // Retrieve the TimeData from the Room database
@@ -61,7 +62,7 @@ class MyAlarmManager(private val context: Context) {
             pendingIntent
         )
     }
-
+    
     private fun getTimeInMillis(timeString: String): Long {
         val sdf = SimpleDateFormat("yyyy-MM-dd hh:mm a", Locale.getDefault())
         val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())

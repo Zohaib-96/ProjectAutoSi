@@ -99,7 +99,8 @@ class AddTimerFragment : Fragment() {
                                 endTime = getEndTime
                             )
                         )
-                        alarmManager.scheduleAlarms(getStartTime,getEndTime)
+                        val recentTime = database.TimeDao().getRecentTime()
+                        alarmManager.scheduleAlarms(recentTime.startTime,recentTime.endTime)
                     }
                 }
 

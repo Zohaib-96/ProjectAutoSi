@@ -16,5 +16,6 @@ data class TimeEntities(
 
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @ColumnInfo(name = "startTime") val startTime: String,
-    @ColumnInfo(name = "endTime") val endTime: String
+    @ColumnInfo(name = "endTime") val endTime: String,
+
 ) : Parcelable

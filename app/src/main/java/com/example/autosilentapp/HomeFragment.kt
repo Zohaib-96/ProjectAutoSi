@@ -1,6 +1,8 @@
 package com.example.autosilentapp
 
+import android.app.AlarmManager
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.graphics.Canvas
@@ -11,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
@@ -78,15 +81,18 @@ class HomeFragment : Fragment(), TimeAdapter.OnTimeClickListener {
             ): Boolean {
                 return false
             }
-
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
                 val adapter = binding.myRecycleView.adapter as TimeAdapter
                 val timeToDelete = adapter.getTime(position)
+
+                // Remove the item from the database and adapter
                 lifecycleScope.launch {
                     database.TimeDao().deleteTime(timeToDelete)
                 }
             }
+
+
 
             override fun onChildDraw(
                 c: Canvas,

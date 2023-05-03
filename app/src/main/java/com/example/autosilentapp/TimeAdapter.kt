@@ -14,8 +14,8 @@ class TimeAdapter(private val listener: OnTimeClickListener) :
 
     private var timeList = listOf<TimeEntities>()
 
-    class ViewHolder(val binding: CustomListTimeBinding) :
-        RecyclerView.ViewHolder(binding.root)
+    class ViewHolder(val binding: CustomListTimeBinding) : RecyclerView.ViewHolder(binding.root)
+
 
     interface OnTimeClickListener {
         fun onTimeClick(time: TimeEntities)
