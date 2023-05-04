@@ -6,6 +6,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/bck_img"
         tools:context=".HomeFragment">
 
         <TextView
@@ -13,10 +14,12 @@
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:layout_margin="10dp"
+            android:gravity="center"
             android:padding="20dp"
             android:text="Alarm"
             android:textSize="50sp"
-            android:textStyle="italic|bold" />
+            android:textColor="#FF018786"
+            android:textStyle="bold" />
 
         <RelativeLayout
             android:layout_width="match_parent"

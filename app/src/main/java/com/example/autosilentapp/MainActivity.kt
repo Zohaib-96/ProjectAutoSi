@@ -13,6 +13,6 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
         navController.navigate(R.id.homeFragment)
-       // navController.navigate(R.id.addTimerFragment2)
+
     }
 }
