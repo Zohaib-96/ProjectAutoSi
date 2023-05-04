@@ -16,25 +16,31 @@
         android:theme="@style/Theme.Autosilentapp"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
-            android:exported="true">
+            android:name=".SplashScreen"
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
 
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-        <receiver android:name=".SilentModeReceiver"
+
+        <receiver
+            android:name=".SilentModeReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.example.autosilentapp.ACTION_SILENT_MODE" />
                 <action android:name="com.example.autosilentapp.ACTION_RING_MODE" />
             </intent-filter>
         </receiver>
-
     </application>
+
 </manifest>
