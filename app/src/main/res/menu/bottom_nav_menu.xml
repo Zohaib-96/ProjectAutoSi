@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/alarm_fragment"
+        android:icon="@drawable/baseline_access_alarm_24"
+        android:title="Alarm " />
+    <item
+        android:id="@+id/stopWatch_fragment"
+        android:icon="@drawable/stop_watch"
+        android:title="StopWatch" />
+    <item
+        android:id="@+id/timer_fragment"
+        android:icon="@drawable/timer"
+        android:title="Timer" />
+</menu>

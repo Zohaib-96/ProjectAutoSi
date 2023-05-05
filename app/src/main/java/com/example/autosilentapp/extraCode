@@ -135,3 +135,30 @@ class com.example.autosilentapp.MyAlarmManager(private val context: Context) {
 
 
 ////////////////////////////////////////////////////////////////////////////////
+
+  // get references to the views in the dialog
+        val hoursPicker = dialog.findViewById<NumberPicker>(R.id.hours_picker)
+        val minutesPicker = dialog.findViewById<NumberPicker>(R.id.minutes_picker)
+        val secondsPicker = dialog.findViewById<NumberPicker>(R.id.seconds_picker)
+        val addButton = dialog.findViewById<Button>(R.id.add_button)
+
+        // set up the add button click listener
+        addButton.setOnClickListener {
+
+            // Set the minimum and maximum values for the NumberPicker widgets
+            hoursPicker.minValue = 0
+            hoursPicker.maxValue = 23
+            minutesPicker.minValue = 0
+            minutesPicker.maxValue = 59
+            secondsPicker.minValue = 0
+            secondsPicker.maxValue = 59
+
+
+            val hours = hoursPicker.value
+            val minutes = minutesPicker.value
+            val seconds = secondsPicker.value
+
+            val timeInMillis = (hours * 3600 + minutes * 60 + seconds) * 1000L
+            // dismiss the dialog
+            dialog.dismiss()
+        }
