@@ -1,6 +1,7 @@
 package com.example.autosilentapp
 
 import android.app.AlarmManager
+import android.app.AlertDialog
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
@@ -84,12 +85,13 @@ class HomeFragment : Fragment(), TimeAdapter.OnTimeClickListener {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
                 val adapter = binding.myRecycleView.adapter as TimeAdapter
-                val timeToDelete = adapter.getTime(position)
+                showDeleteConfirmationDialog(position, adapter)
+               /* val timeToDelete = adapter.getTime(position)
 
                 // Remove the item from the database and adapter
                 lifecycleScope.launch {
                     database.TimeDao().deleteTime(timeToDelete)
-                }
+                }*/
             }
 
 
@@ -127,5 +129,38 @@ class HomeFragment : Fragment(), TimeAdapter.OnTimeClickListener {
             startActivity(intent)
         }
     }
+    private fun showDeleteConfirmationDialog(position: Int, adapter: TimeAdapter) {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setMessage("Are you sure you want to delete this item?")
+            .setCancelable(false)
+            .setPositiveButton("Yes") { _, _ ->
+                val timeToDelete = adapter.getTime(position)
+                val pendingIntent = createPendingIntent(timeToDelete)
+                val alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                MyAlarmManager(requireContext()).cancelAlarms(pendingIntent, alarmManager)
+                // Remove the item from the database and adapter
+                lifecycleScope.launch {
+                    database.TimeDao().deleteTime(timeToDelete)
+                }
+            }
+            .setNegativeButton("No") { dialog, _ ->
+                dialog.dismiss()
+                adapter.notifyItemChanged(position)
+            }
+        val alertDialog = builder.create()
+        alertDialog.show()
+    }
+    private fun createPendingIntent(time: TimeEntities): PendingIntent {
+        val intent = Intent(requireContext(), SilentModeReceiver::class.java)
+        intent.action = SilentModeReceiver.ACTION_SET_TIMER
+        intent.putExtra(SilentModeReceiver.EXTRA_TIMER_ID, time.id)
+        return PendingIntent.getBroadcast(
+            requireContext(),
+            time.id.toInt(),
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+    }
+
 }
 

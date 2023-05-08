@@ -9,79 +9,108 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@drawable/background">
 
             <TextView
                 android:id="@+id/txtTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
+                android:layout_margin="20sp"
                 android:layout_marginTop="30dp"
                 android:text="Timer"
-                android:textSize="50dp"
+                android:textColor="@color/dark_blue"
+                android:textSize="40dp"
+                android:textStyle="bold"
+                />
+
+            <TextView
+                android:id="@+id/tvNameOfTimer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txtTitle"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:text="Timer"
+                android:textColor="@color/dark_blue"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvTimer"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_below="@id/tvNameOfTimer"
+                android:layout_centerInParent="true"
+                android:background="@drawable/button_shape"
+                android:backgroundTint="@color/dark_blue"
+                android:gravity="center"
+                android:text="00:00:00"
+                android:textColor="@color/white"
+                android:textSize="30dp"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/btnAdd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/txtTitle"
+                android:layout_below="@+id/tvTimer"
                 android:layout_alignParentRight="true"
                 android:layout_marginTop="70dp"
                 android:layout_marginRight="40dp"
                 android:text="Add Time"
+                android:textColor="@color/dark_blue"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/tvNameOfTimer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Timer"
-                android:textSize="20sp"
-                android:layout_below="@+id/btnAdd"
-                android:textStyle="bold"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="100dp"/>
-
-            <TextView
-                android:id="@+id/tvTimer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:gravity="center"
-                android:text="00:00:00"
-                android:textSize="30dp"
-                android:textStyle="bold" />
 
             <Button
                 android:id="@+id/btnStart"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="80dp"
+                android:background="@drawable/button_shape"
+                android:drawableLeft="@drawable/baseline_play_arrow_24"
+                android:paddingLeft="3dp"
                 android:text="Start" />
 
             <Button
                 android:id="@+id/btnReset"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
+                android:layout_marginLeft="45dp"
                 android:layout_marginBottom="80dp"
-                android:text="Reset"
                 android:layout_toRightOf="@+id/btnStart"
-                android:layout_marginLeft="15dp"/>
+                android:background="@android:color/transparent"
+                android:backgroundTint="@color/white"
+                android:drawableLeft="@drawable/baseline_refresh_24"
+                android:paddingLeft="3dp" />
 
             <Button
                 android:id="@+id/btnStop"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginRight="40dp"
+                android:layout_marginBottom="80dp"
+                android:background="@drawable/button_shape"
+                android:drawableLeft="@drawable/baseline_pause_24"
+                android:paddingLeft="5dp"
+                android:text="Stop" />
+
+            <Button
+                android:id="@+id/btnStopMusic"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
-                android:layout_marginBottom="80dp"
+                android:layout_marginBottom="150dp"
+                android:background="@drawable/round_button"
                 android:text="Stop" />
-
         </RelativeLayout>
 
     </FrameLayout>

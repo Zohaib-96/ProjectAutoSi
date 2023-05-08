@@ -4,7 +4,6 @@ import android.app.Dialog
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,25 +22,39 @@ class TimerFragment : Fragment() {
     private var countDownTimer: CountDownTimer? = null
     private var timeLeftInMillis: Long = 0
     private lateinit var mediaPlayer: MediaPlayer
+    private var shouldPlayRingtone = false
 
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_timer, container, false)
 
         mediaPlayer = MediaPlayer.create(requireContext(), R.raw.alarmringtone)
 
         binding.btnStop.visibility = View.INVISIBLE
+        binding.btnStart.visibility = View.INVISIBLE
+        binding.btnStopMusic.visibility = View.INVISIBLE
+        binding.btnReset.visibility = View.INVISIBLE
+
 
         binding.btnAdd.setOnClickListener {
+            binding.btnStart.visibility = View.VISIBLE
+            binding.btnStopMusic.visibility = View.INVISIBLE
+            binding.btnReset.visibility = View.VISIBLE
             showAddTimerDialog()
         }
+
         binding.btnStart.setOnClickListener {
             startCountDownTimer(durationInMillis)
             binding.btnStop.visibility = View.VISIBLE
             binding.btnStart.visibility = View.INVISIBLE
+            binding.btnStopMusic.visibility = View.INVISIBLE
+        }
+
+        binding.btnStopMusic.setOnClickListener {
+            binding.btnStopMusic.visibility = View.INVISIBLE
+            stopRingtone()
         }
         binding.btnStop.setOnClickListener {
             pauseCountDownTimer()
@@ -71,10 +84,11 @@ class TimerFragment : Fragment() {
         hourPicker.maxValue = 23
         minPicker.minValue = 0
         minPicker.maxValue = 59
-        secPicker.minValue = 0
+        secPicker.minValue = 1
         secPicker.maxValue = 59
         // set up the add button click listener
         addButton.setOnClickListener {
+
 
             // get the values from the number pickers
             val hours = hourPicker.value
@@ -107,10 +121,13 @@ class TimerFragment : Fragment() {
             override fun onFinish() {
                 // update the view when the timer is finished
                 binding.tvTimer.text = "00:00:00"
-                binding.btnStart.visibility = View.VISIBLE
+                binding.btnStart.visibility = View.INVISIBLE
                 binding.btnStop.visibility = View.INVISIBLE
                 binding.btnReset.visibility = View.INVISIBLE
-                playRingtone(2000L)
+                binding.btnStopMusic.visibility = View.VISIBLE
+
+                shouldPlayRingtone = true
+                playRingtone()
             }
         }
 
@@ -141,11 +158,21 @@ class TimerFragment : Fragment() {
         timeLeftInMillis = 0
     }
 
-    private fun playRingtone(durationInMillis: Long) {
-        mediaPlayer.start()
-        Handler().postDelayed({
-            mediaPlayer.pause()
-            mediaPlayer.seekTo(0)
-        }, durationInMillis)
+    private fun playRingtone() {
+        // Only play the ringtone if shouldPlayRingtone is true
+        if (shouldPlayRingtone) {
+            mediaPlayer.start()
+        }
+    }
+
+    private fun stopRingtone() {
+        mediaPlayer.stop()
+        mediaPlayer.prepare()
+        shouldPlayRingtone = false
+    }
+
+    override fun onDestroy() {
+        mediaPlayer.release()
+        super.onDestroy()
     }
 }

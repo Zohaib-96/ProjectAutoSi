@@ -74,4 +74,29 @@ class MyAlarmManager(private val context: Context) {
         }
         return calendar.timeInMillis
     }
+    fun cancelAlarms(startTime: PendingIntent, endTime: AlarmManager) {
+        val silentRequestCode = startTime.hashCode()
+        val ringRequestCode = endTime.hashCode()
+        val silentIntent = Intent(context, SilentModeReceiver::class.java).apply {
+            action = "com.example.autosilentapp.ACTION_SILENT_MODE"
+        }
+        val ringModeIntent = Intent(context, SilentModeReceiver::class.java).apply {
+            action = "com.example.autosilentapp.ACTION_RING_MODE"
+        }
+        val silentPendingIntent = PendingIntent.getBroadcast(
+            context,
+            silentRequestCode,
+            silentIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        val ringModePendingIntent = PendingIntent.getBroadcast(
+            context,
+            ringRequestCode,
+            ringModeIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        alarmManager.cancel(silentPendingIntent)
+        alarmManager.cancel(ringModePendingIntent)
+    }
+
 }

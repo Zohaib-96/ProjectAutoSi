@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/background">
 
     <TextView
         android:layout_width="wrap_content"
@@ -11,14 +12,16 @@
         android:layout_marginTop="40dp"
         android:text="Pick Time"
         android:textSize="30dp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:textColor="@color/dark_blue"/>
 
     <LinearLayout
         android:id="@+id/time_picker_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:background="@drawable/layout_shape">
 
         <NumberPicker
             android:id="@+id/hours_picker"
@@ -61,6 +64,8 @@
             android:gravity="center_horizontal"
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/edt_timer_name"
-            android:text="Add" />
+            android:text="Add"
+            android:background="@drawable/round_button"
+            />
     </RelativeLayout>
 </LinearLayout>
