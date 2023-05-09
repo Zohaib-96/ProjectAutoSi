@@ -10,7 +10,7 @@
         tools:context=".HomeFragment">
 
         <TextView
-            android:id="@+id/txt_alarm"
+            android:id="@+id/currentTime"
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:layout_margin="10dp"

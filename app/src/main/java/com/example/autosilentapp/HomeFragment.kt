@@ -7,14 +7,14 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.graphics.Canvas
-import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
@@ -29,17 +29,25 @@ import com.example.autosilentapp.databinding.FragmentHomeBinding
 import com.google.gson.Gson
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 
 class HomeFragment : Fragment(), TimeAdapter.OnTimeClickListener {
 
     private lateinit var binding: FragmentHomeBinding
     private lateinit var database: TimeDB
+    private lateinit var handler: Handler
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
+
+        // Initialize the handle variable
+        handler = Handler(Looper.getMainLooper())
 
         database = TimeDB.getDatabase(requireContext())
 
@@ -82,6 +90,7 @@ class HomeFragment : Fragment(), TimeAdapter.OnTimeClickListener {
             ): Boolean {
                 return false
             }
+
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
                 val adapter = binding.myRecycleView.adapter as TimeAdapter
@@ -93,7 +102,6 @@ class HomeFragment : Fragment(), TimeAdapter.OnTimeClickListener {
                      database.TimeDao().deleteTime(timeToDelete)
                  }*/
             }
-
 
 
             override fun onChildDraw(
@@ -128,7 +136,9 @@ class HomeFragment : Fragment(), TimeAdapter.OnTimeClickListener {
             val intent = Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)
             startActivity(intent)
         }
+        handler.post(updateTime)
     }
+
     private fun showDeleteConfirmationDialog(position: Int, adapter: TimeAdapter) {
         val builder = AlertDialog.Builder(requireContext())
         builder.setMessage("Are you sure you want to delete this item?")
@@ -136,7 +146,8 @@ class HomeFragment : Fragment(), TimeAdapter.OnTimeClickListener {
             .setPositiveButton("Yes") { _, _ ->
                 val timeToDelete = adapter.getTime(position)
                 val pendingIntent = createPendingIntent(timeToDelete)
-                val alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                val alarmManager =
+                    requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
                 MyAlarmManager(requireContext()).cancelAlarms(pendingIntent, alarmManager)
                 // Remove the item from the database and adapter
                 lifecycleScope.launch {
@@ -150,6 +161,7 @@ class HomeFragment : Fragment(), TimeAdapter.OnTimeClickListener {
         val alertDialog = builder.create()
         alertDialog.show()
     }
+
     private fun createPendingIntent(time: TimeEntities): PendingIntent {
         val intent = Intent(requireContext(), SilentModeReceiver::class.java)
         intent.action = SilentModeReceiver.ACTION_SET_TIMER
@@ -162,5 +174,19 @@ class HomeFragment : Fragment(), TimeAdapter.OnTimeClickListener {
         )
     }
 
+    private val updateTime: Runnable = object : Runnable {
+        override fun run() {
+            val currentTime = System.currentTimeMillis()
+            val dateFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+            val formattedTime = dateFormat.format(Date(currentTime))
+            binding.currentTime.text = formattedTime
+            handler.postDelayed(this, 1000)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        handler.removeCallbacks(updateTime)
+    }
 }
 
