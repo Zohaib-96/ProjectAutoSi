@@ -18,4 +18,4 @@ data class TimeEntities(
     @ColumnInfo(name = "startTime") val startTime: String,
     @ColumnInfo(name = "endTime") val endTime: String,
 
-) : Parcelable
+    ) : Parcelable

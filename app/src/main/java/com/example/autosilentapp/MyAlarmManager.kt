@@ -62,7 +62,7 @@ class MyAlarmManager(private val context: Context) {
             pendingIntent
         )
     }
-    
+
     private fun getTimeInMillis(timeString: String): Long {
         val sdf = SimpleDateFormat("yyyy-MM-dd hh:mm a", Locale.getDefault())
         val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())

@@ -14,23 +14,30 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        // Retrieve the NavHostFragment and NavController
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
+
+        // Set the start destination
         navController.navigate(R.id.homeFragment)
 
-        binding.bottomNavigation.setOnItemSelectedListener {
-            when (it.itemId) {
-                R.id.alarm_fragment -> replaceFragment(HomeFragment())
-                R.id.stopWatch_fragment -> replaceFragment(StopWatchFragment())
-                R.id.timer_fragment -> replaceFragment(TimerFragment())
+        // Set the listener for the bottom navigation view
+        binding.bottomNavigation.setOnItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.alarm_fragment -> {
+                    navController.navigate(R.id.homeFragment)
+                    true
+                }
+                R.id.stopWatchFragment2 -> {
+                    navController.navigate(R.id.stopWatchFragment2)
+                    true
+                }
+                R.id.timerFragment2 -> {
+                    navController.navigate(R.id.timerFragment2)
+                    true
+                }
+                else -> false
             }
-            true
         }
-    }
-    private fun replaceFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-        .replace(R.id.nav_host_fragment, fragment)
-        .commit()
     }
 }

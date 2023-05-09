@@ -13,7 +13,17 @@
         <action
             android:id="@+id/action_homeFragment_to_addTimerFragment"
             app:destination="@id/addTimerFragment2" />
+        <action
+            android:id="@+id/action_homeFragment_to_stopWatchFragment2"
+            app:destination="@id/stopWatchFragment2" />
+        <action
+            android:id="@+id/action_homeFragment_to_stopWatchFragment22"
+            app:destination="@id/stopWatchFragment2" />
+        <action
+            android:id="@+id/action_homeFragment_to_timerFragment2"
+            app:destination="@id/timerFragment2" />
     </fragment>
+
     <fragment
         android:id="@+id/addTimerFragment2"
         android:name="com.example.autosilentapp.AddTimerFragment"
@@ -25,5 +35,28 @@
         <argument
             android:name="time"
             app:argType="com.example.autosilentapp.TimeEntities" />
+    </fragment>
+    <fragment
+        android:id="@+id/stopWatchFragment2"
+        android:name="com.example.autosilentapp.StopWatchFragment"
+        android:label="fragment_stop_watch"
+        tools:layout="@layout/fragment_stop_watch" >
+        <action
+            android:id="@+id/action_stopWatchFragment2_to_timerFragment2"
+            app:destination="@id/timerFragment2" />
+        <action
+            android:id="@+id/action_stopWatchFragment2_to_homeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/timerFragment2"
+        android:name="com.example.autosilentapp.TimerFragment"
+        android:label="TimerFragment" >
+        <action
+            android:id="@+id/action_timerFragment2_to_homeFragment"
+            app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_timerFragment2_to_stopWatchFragment2"
+            app:destination="@id/stopWatchFragment2" />
     </fragment>
 </navigation>

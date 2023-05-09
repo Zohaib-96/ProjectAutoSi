@@ -5,11 +5,11 @@
         android:icon="@drawable/baseline_access_alarm_24"
         android:title="Alarm " />
     <item
-        android:id="@+id/stopWatch_fragment"
+        android:id="@+id/stopWatchFragment2"
         android:icon="@drawable/stop_watch"
         android:title="StopWatch" />
     <item
-        android:id="@+id/timer_fragment"
+        android:id="@+id/timerFragment2"
         android:icon="@drawable/timer"
         android:title="Timer" />
 </menu>

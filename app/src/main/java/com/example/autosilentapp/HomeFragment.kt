@@ -86,12 +86,12 @@ class HomeFragment : Fragment(), TimeAdapter.OnTimeClickListener {
                 val position = viewHolder.adapterPosition
                 val adapter = binding.myRecycleView.adapter as TimeAdapter
                 showDeleteConfirmationDialog(position, adapter)
-               /* val timeToDelete = adapter.getTime(position)
+                /* val timeToDelete = adapter.getTime(position)
 
-                // Remove the item from the database and adapter
-                lifecycleScope.launch {
-                    database.TimeDao().deleteTime(timeToDelete)
-                }*/
+                 // Remove the item from the database and adapter
+                 lifecycleScope.launch {
+                     database.TimeDao().deleteTime(timeToDelete)
+                 }*/
             }
 
 
