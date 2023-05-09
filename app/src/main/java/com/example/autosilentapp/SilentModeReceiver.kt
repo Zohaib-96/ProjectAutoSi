@@ -16,7 +16,7 @@ class SilentModeReceiver : BroadcastReceiver() {
         val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         when(intent.action){
             "com.example.autosilentapp.ACTION_SILENT_MODE" ->{
-                audioManager.ringerMode = AudioManager.RINGER_MODE_SILENT
+                audioManager.ringerMode = AudioManager.RINGER_MODE_VIBRATE
             }
             "com.example.autosilentapp.ACTION_RING_MODE" ->{
                 audioManager.ringerMode = AudioManager.RINGER_MODE_NORMAL
