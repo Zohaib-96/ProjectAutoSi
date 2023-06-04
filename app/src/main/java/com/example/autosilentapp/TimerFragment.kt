@@ -71,6 +71,7 @@ class TimerFragment : Fragment() {
         val dialog = Dialog(requireContext())
         dialog.setContentView(R.layout.dialog_add_timer)
         dialog.setTitle("Add Timer")
+        dialog.setCancelable(false)
 
         // get references to the views in the dialog
         val hourPicker = dialog.findViewById<NumberPicker>(R.id.hours_picker)

@@ -12,4 +12,9 @@
         android:id="@+id/timerFragment2"
         android:icon="@drawable/timer"
         android:title="Timer" />
+
+    <item
+        android:id="@+id/PrayerTineFragment"
+        android:icon="@drawable/timer"
+        android:title="Timer" />
 </menu>

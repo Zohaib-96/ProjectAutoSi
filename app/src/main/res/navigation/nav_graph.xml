@@ -22,6 +22,12 @@
         <action
             android:id="@+id/action_homeFragment_to_timerFragment2"
             app:destination="@id/timerFragment2" />
+        <action
+            android:id="@+id/action_homeFragment_to_prayerTimeFragment"
+            app:destination="@id/prayerTimeFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_prayerTimeFragment2"
+            app:destination="@id/prayerTimeFragment" />
     </fragment>
 
     <fragment
@@ -47,6 +53,9 @@
         <action
             android:id="@+id/action_stopWatchFragment2_to_homeFragment"
             app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_stopWatchFragment2_to_prayerTimeFragment"
+            app:destination="@id/prayerTimeFragment" />
     </fragment>
     <fragment
         android:id="@+id/timerFragment2"
@@ -57,6 +66,23 @@
             app:destination="@id/homeFragment" />
         <action
             android:id="@+id/action_timerFragment2_to_stopWatchFragment2"
+            app:destination="@id/stopWatchFragment2" />
+        <action
+            android:id="@+id/action_timerFragment2_to_prayerTimeFragment"
+            app:destination="@id/prayerTimeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/prayerTimeFragment"
+        android:name="com.example.autosilentapp.PrayerTimeFragment"
+        android:label="PrayerTimeFragment" >
+        <action
+            android:id="@+id/action_prayerTimeFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_prayerTimeFragment_to_timerFragment2"
+            app:destination="@id/timerFragment2" />
+        <action
+            android:id="@+id/action_prayerTimeFragment_to_stopWatchFragment2"
             app:destination="@id/stopWatchFragment2" />
     </fragment>
 </navigation>

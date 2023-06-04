@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".PrayerTimeFragment"
+        android:background="@drawable/backgroundimg">
+
+        <soup.neumorphism.NeumorphCardView
+            android:id="@+id/fajarTimeCartView"
+            style="@style/Widget.Neumorph.CardView"
+            android:layout_width="match_parent"
+            android:layout_height="110dp"
+            app:neumorph_shadowColorDark="#000000"
+            app:neumorph_shadowColorLight="#6782E1"
+            app:neumorph_shadowElevation="3dp"
+            app:neumorph_shapeType="flat"
+            android:layout_marginTop="50dp">
+
+            <soup.neumorphism.NeumorphImageView
+                style="@style/Widget.Neumorph.ImageView"
+                android:layout_width="100dp"
+                android:layout_height="90dp"
+                android:src="@drawable/fajartime"
+                app:neumorph_shapeType="basin" />
+
+            <soup.neumorphism.NeumorphTextView
+                android:id="@+id/tv_fajarTime"
+                style="@style/Widget.Neumorph.TextView"
+                android:layout_width="100dp"
+                android:layout_height="90dp"
+                android:layout_gravity="end"
+                android:gravity="center"
+                android:text="4:25"
+                android:textSize="40sp"
+                app:neumorph_shapeType="basin" />
+        </soup.neumorphism.NeumorphCardView>
+
+        <soup.neumorphism.NeumorphCardView
+            android:id="@+id/zuhrTimeCartView"
+            style="@style/Widget.Neumorph.CardView"
+            android:layout_width="match_parent"
+            android:layout_height="110dp"
+            android:layout_marginTop="170dp"
+            app:neumorph_shadowColorDark="#000000"
+            app:neumorph_shadowColorLight="#6782E1"
+            app:neumorph_shadowElevation="3dp"
+            app:neumorph_shapeType="flat">
+
+            <soup.neumorphism.NeumorphImageView
+                style="@style/Widget.Neumorph.ImageView"
+                android:layout_width="100dp"
+                android:layout_height="90dp"
+                android:src="@drawable/zuhr"
+                app:neumorph_shapeType="basin" />
+
+            <soup.neumorphism.NeumorphTextView
+                android:id="@+id/tv_zuhrTime"
+                style="@style/Widget.Neumorph.TextView"
+                android:layout_width="100dp"
+                android:layout_height="90dp"
+                android:layout_gravity="end"
+                android:gravity="center"
+                android:text="1:25"
+                android:textSize="40sp"
+                app:neumorph_shapeType="basin" />
+        </soup.neumorphism.NeumorphCardView>
+
+        <soup.neumorphism.NeumorphCardView
+            android:id="@+id/asrTimeCartView"
+            style="@style/Widget.Neumorph.CardView"
+            android:layout_width="match_parent"
+            android:layout_height="110dp"
+            android:layout_marginTop="290dp"
+            app:neumorph_shadowColorDark="#000000"
+            app:neumorph_shadowColorLight="#6782E1"
+            app:neumorph_shadowElevation="3dp"
+            app:neumorph_shapeType="flat">
+
+            <soup.neumorphism.NeumorphImageView
+                style="@style/Widget.Neumorph.ImageView"
+                android:layout_width="100dp"
+                android:layout_height="90dp"
+                android:src="@drawable/asr"
+                app:neumorph_shapeType="basin" />
+
+            <soup.neumorphism.NeumorphTextView
+                android:id="@+id/tv_asrTime"
+                style="@style/Widget.Neumorph.TextView"
+                android:layout_width="100dp"
+                android:layout_height="90dp"
+                android:layout_gravity="end"
+                android:gravity="center"
+                android:text="5:55"
+                android:textSize="40sp"
+                app:neumorph_shapeType="basin" />
+        </soup.neumorphism.NeumorphCardView>
+
+        <soup.neumorphism.NeumorphCardView
+            android:id="@+id/maghribTimeCartView"
+            style="@style/Widget.Neumorph.CardView"
+            android:layout_width="match_parent"
+            android:layout_height="110dp"
+            android:layout_marginTop="410dp"
+            app:neumorph_shadowColorDark="#000000"
+            app:neumorph_shadowColorLight="#6782E1"
+            app:neumorph_shadowElevation="3dp"
+            app:neumorph_shapeType="flat">
+
+            <soup.neumorphism.NeumorphImageView
+                style="@style/Widget.Neumorph.ImageView"
+                android:layout_width="100dp"
+                android:layout_height="90dp"
+                android:src="@drawable/maghribtime"
+                app:neumorph_shapeType="basin" />
+
+            <soup.neumorphism.NeumorphTextView
+                android:id="@+id/tv_maghribTime"
+                style="@style/Widget.Neumorph.TextView"
+                android:layout_width="100dp"
+                android:layout_height="90dp"
+                android:layout_gravity="end"
+                android:gravity="center"
+                android:text="7:25"
+                android:textSize="40sp"
+                app:neumorph_shapeType="basin" />
+        </soup.neumorphism.NeumorphCardView>
+
+        <soup.neumorphism.NeumorphCardView
+            android:id="@+id/ishaTimeCartView"
+            style="@style/Widget.Neumorph.CardView"
+            android:layout_width="match_parent"
+            android:layout_height="110dp"
+            android:layout_marginTop="530dp"
+            app:neumorph_shadowColorDark="#000000"
+            app:neumorph_shadowColorLight="#6782E1"
+            app:neumorph_shadowElevation="3dp"
+            app:neumorph_shapeType="flat">
+
+            <soup.neumorphism.NeumorphImageView
+                style="@style/Widget.Neumorph.ImageView"
+                android:layout_width="100dp"
+                android:layout_height="90dp"
+                android:src="@drawable/ic_moon"
+                app:neumorph_shapeType="basin" />
+
+            <soup.neumorphism.NeumorphTextView
+                android:id="@+id/tv_ishaTime"
+                style="@style/Widget.Neumorph.TextView"
+                android:layout_width="100dp"
+                android:layout_height="90dp"
+                android:layout_gravity="end"
+                android:gravity="center"
+                android:text="9:10"
+                android:textSize="40sp"
+                app:neumorph_shapeType="basin" />
+        </soup.neumorphism.NeumorphCardView>
+
+    </FrameLayout>
+
+</layout>

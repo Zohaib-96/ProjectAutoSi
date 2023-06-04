@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
+    <soup.neumorphism.NeumorphCardView
+        style="@style/Widget.Neumorph.CardView"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="110dp"
+        app:neumorph_shapeType="flat"
+        app:neumorph_shadowElevation="3dp"
+        app:neumorph_shadowColorLight="#6782E1"
+        app:neumorph_shadowColorDark="#000000"
         >
         <LinearLayout
             android:layout_width="400dp"
             android:layout_height="90dp"
-            android:background="@drawable/layout_shape"
             android:layout_marginTop="5dp"
             android:layout_marginLeft="5dp"
             >
@@ -87,5 +92,5 @@
 
             </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
+    </soup.neumorphism.NeumorphCardView>
 </layout>

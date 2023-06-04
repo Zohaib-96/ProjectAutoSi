@@ -36,6 +36,10 @@ class MainActivity : AppCompatActivity() {
                     navController.navigate(R.id.timerFragment2)
                     true
                 }
+                R.id.PrayerTineFragment ->{
+                    navController.navigate(R.id.prayerTimeFragment)
+                    true
+                }
                 else -> false
             }
         }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -12,7 +13,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/background"
+        android:background="@drawable/backgroundimg"
         tools:context=".AddTimerFragment">
 
         <LinearLayout
@@ -26,21 +27,19 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="16dp"
-                android:text="Set New Time"
+                android:text="Set Time"
                 android:textColor="@color/black"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
-
             <!-- -&#45;&#45;&#45;5; Strat Time &#45;&#45;&#45;&#45;&#45;&#-->
 
-            <LinearLayout
-                android:id="@+id/StarttimeLayout"
-                android:layout_width="400dp"
-                android:layout_height="80dp"
+            <soup.neumorphism.NeumorphCardView
+                style="@style/Widget.Neumorph.CardView"
+                android:layout_width="380dp"
+                android:layout_height="120dp"
                 android:layout_marginLeft="5dp"
-                android:layout_marginTop="30dp"
-                android:background="@drawable/layout_shape"
+                android:layout_marginTop="70dp"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -74,29 +73,29 @@
 
                 <Button
                     android:id="@+id/startTimePicker"
-                    android:layout_width="150dp"
+                    android:layout_width="140dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="120dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="200dp"
+                    android:layout_marginTop="20sp"
                     android:backgroundTint="@color/white"
                     android:drawableRight="@drawable/addtime"
                     android:text="Time Picker"
                     android:textAllCaps="false"
                     android:textColor="@color/black" />
 
-            </LinearLayout>
+            </soup.neumorphism.NeumorphCardView>
 
             <!-- -&#45;&#45;&#45;5; Strat Time &#45;&#45;&#45;&#45;&#45;&#-->
 
 
             <!-- -&#45;&#45;&#45;5; End Time &#45;&#45;&#45;&#45;&#45;&#-->
 
-            <LinearLayout
-                android:layout_width="400dp"
-                android:layout_height="80dp"
+            <soup.neumorphism.NeumorphCardView
+                style="@style/Widget.Neumorph.CardView"
+                android:layout_width="380dp"
+                android:layout_height="120dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/layout_shape"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -127,33 +126,39 @@
 
                 </LinearLayout>
 
-
                 <Button
                     android:id="@+id/endTimePicker"
-                    android:layout_width="150dp"
+                    android:layout_width="140dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="125dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="200dp"
+                    android:layout_marginTop="20sp"
                     android:backgroundTint="@color/white"
                     android:drawableRight="@drawable/addtime"
                     android:text="Time Picker"
                     android:textAllCaps="false"
                     android:textColor="@color/black" />
 
-
-            </LinearLayout>
+            </soup.neumorphism.NeumorphCardView>
 
             <!-- -&#45;&#45;&#45;5;&#45;&#45;&#45;&#45;&#45;&#-->
-            <Button
+            <soup.neumorphism.NeumorphButton
                 android:id="@+id/btnSet"
-                android:layout_width="100dp"
-                android:layout_height="57dp"
+                android:layout_width="150dp"
+                android:layout_height="70dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="60dp"
-                android:background="@drawable/button_shape"
+                style="@style/Widget.Neumorph.Button"
                 android:backgroundTint="@color/white"
                 android:text="Set"
-                android:textSize="19sp" />
+                android:textSize="19sp"
+                app:neumorph_shapeType="flat"
+                android:background="@drawable/round_button"
+                android:clickable="true"
+                android:focusable="true"
+                app:neumorph_shadowElevation="2dp"
+                app:neumorph_shadowColorLight="#6782E1"
+                app:neumorph_shadowColorDark="#000000"
+                />
 
         </LinearLayout>
 

@@ -10,7 +10,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/background">
+            android:background="@drawable/backgroundimg">
 
             <TextView
                 android:id="@+id/txtTitle"
@@ -50,17 +50,20 @@
                 android:textSize="30dp"
                 android:textStyle="bold" />
 
-            <TextView
+            <soup.neumorphism.NeumorphTextView
                 android:id="@+id/btnAdd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tvTimer"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_marginTop="70dp"
-                android:layout_marginRight="40dp"
+                android:layout_marginEnd="40dp"
                 android:text="Add Time"
                 android:textColor="@color/dark_blue"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                style="@style/Widget.Neumorph.TextView"
+                android:clickable="true"
+                android:focusable="true" />
 
 
             <Button
@@ -81,7 +84,7 @@
                 android:layout_height="50dp"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
-                android:layout_marginLeft="45dp"
+                android:layout_marginStart="45dp"
                 android:layout_marginBottom="80dp"
                 android:layout_toRightOf="@+id/btnStart"
                 android:background="@android:color/transparent"
@@ -91,26 +94,30 @@
 
             <Button
                 android:id="@+id/btnStop"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginRight="40dp"
-                android:layout_marginBottom="80dp"
-                android:background="@drawable/button_shape"
-                android:drawableLeft="@drawable/baseline_pause_24"
-                android:paddingLeft="5dp"
-                android:text="Stop" />
-
-            <Button
-                android:id="@+id/btnStopMusic"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
+                android:layout_marginBottom="80dp"
+                android:background="@drawable/baseline_play_arrow_24"
+                android:drawableStart="@drawable/baseline_pause_24"
+                android:text="Stop"
+               />
+
+            <soup.neumorphism.NeumorphButton
+                android:id="@+id/btnStopMusic"
+                android:layout_width="100dp"
+                android:layout_height="70dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
                 android:layout_marginBottom="150dp"
                 android:background="@drawable/round_button"
-                android:text="Stop" />
+                android:text="Stop"
+                style="@style/Widget.Neumorph.Button"
+                android:clickable="true"
+                android:focusable="true"
+                android:textColor="@color/dark_blue"
+                />
         </RelativeLayout>
 
     </FrameLayout>

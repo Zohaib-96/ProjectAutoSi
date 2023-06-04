@@ -117,10 +117,10 @@ class HomeFragment : Fragment(), TimeAdapter.OnTimeClickListener {
                     c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive
                 ).addSwipeLeftBackgroundColor(
                     ContextCompat.getColor(
-                        requireContext(), R.color.purple_200
+                        requireContext(), R.color.red
                     )
                 ).addSwipeLeftActionIcon(R.drawable.delete_icon).addSwipeRightBackgroundColor(
-                    ContextCompat.getColor(requireContext(), R.color.purple_200)
+                    ContextCompat.getColor(requireContext(), R.color.red)
                 ).addSwipeRightActionIcon(R.drawable.delete_icon).create().decorate()
                 super.onChildDraw(
                     c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive

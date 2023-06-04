@@ -6,34 +6,45 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/background"
-        tools:context=".HomeFragment">
-
-        <TextView
-            android:id="@+id/currentTime"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_margin="10dp"
-            android:gravity="center"
-            android:padding="20dp"
-            android:text="Alarm"
-            android:textSize="50sp"
-            android:textColor="@color/black"
-            android:textStyle="bold" />
+        tools:context=".HomeFragment"
+        android:background="@drawable/backgroundimg"
+        >
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="100dp">
+            android:layout_marginTop="10dp">
+
+            <LinearLayout
+                android:id="@+id/Timerlayout"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/button_shape"
+                android:backgroundTint="@color/dark_blue">
+                <TextView
+                    android:id="@+id/currentTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="00:00.00"
+                    android:layout_centerHorizontal="true"
+                    android:textColor="@color/white"
+                    android:textSize="25sp"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/myRecycleView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:layout_below="@+id/Timerlayout"/>
 
         </RelativeLayout>
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
+        <!--<com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btn_floating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -43,6 +54,22 @@
             android:contentDescription="@string/todo"
             android:src="@android:drawable/ic_input_add"
             android:backgroundTint="@color/dark_blue"
-            app:fabSize="normal" />
+            app:fabSize="normal" />-->
+        <soup.neumorphism.NeumorphFloatingActionButton
+            android:id="@+id/btn_floating"
+            style="@style/Widget.Neumorph.FloatingActionButton"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="95dp"
+            android:clickable="true"
+            android:contentDescription="@string/todo"
+            android:focusable="true"
+            android:src="@drawable/ic_baseline_add_24"
+            app:fabSize="normal"
+            app:neumorph_shapeType="flat"
+            />
+
     </FrameLayout>
 </layout>
