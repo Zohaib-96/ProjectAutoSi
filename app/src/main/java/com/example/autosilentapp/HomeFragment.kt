@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,6 +31,7 @@ import com.google.gson.Gson
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -39,8 +41,7 @@ class HomeFragment : Fragment(), TimeAdapter.OnTimeClickListener {
     private lateinit var binding: FragmentHomeBinding
     private lateinit var database: TimeDB
     private lateinit var handler: Handler
-
-
+    
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -56,6 +57,9 @@ class HomeFragment : Fragment(), TimeAdapter.OnTimeClickListener {
         }
         bindRecycleViewAndAdapter()
         swipeToDelete()
+
+            getPrayerTimes()
+
 
         return binding.root
     }
@@ -187,6 +191,116 @@ class HomeFragment : Fragment(), TimeAdapter.OnTimeClickListener {
     override fun onPause() {
         super.onPause()
         handler.removeCallbacks(updateTime)
+    }
+
+    ////////////////////////// sitting Alarm for Prayer //////////////////////////
+
+    private fun getPrayerTimes() {
+        val sharedPreferences = requireContext().getSharedPreferences("AppPreferences", Context.MODE_PRIVATE)
+        val isPrayerTimesLoaded = sharedPreferences.getBoolean("isPrayerTimesLoaded", false)
+        if (!isPrayerTimesLoaded) {
+            val timeDao = database.prayerTimesDao()
+            lifecycleScope.launch {
+                val prayerTimes: List<PrayerTimesEntity> = timeDao.getAllPrayerTimes()
+                setAlarmForPrayerTimes(prayerTimes)
+                sharedPreferences.edit().putBoolean("isPrayerTimesLoaded", true).apply()
+            }
+        }
+    }
+
+    private fun setAlarmForPrayerTimes(prayerTimes: List<PrayerTimesEntity>) {
+        for (prayerTime in prayerTimes) {
+            Log.d("prayerTime", "in for loop time ----- $prayerTime")
+
+            // Set alarm for prayer start time
+            val timeStartParts = prayerTime.startTime.split(":")
+            Log.d("prayerTime", "start time split ----- $timeStartParts")
+
+            val startTimeHour = timeStartParts[0].toInt()
+            val startTimeMin = timeStartParts[1].toInt()
+            scheduleSilentModeAlarm(startTimeHour, startTimeMin)
+            // Set alarm for prayer end time
+            val timeEndParts = prayerTime.endTime.split(":")
+            Log.d("prayerTime", "end time split ----- $timeEndParts")
+
+            val endTimeHour = timeEndParts[0].toInt()
+            val endTimeMin = timeEndParts[1].toInt()
+            scheduleRingModeAlarm(endTimeHour, endTimeMin)
+        }
+    }
+
+    private fun scheduleSilentModeAlarm(hour: Int, minute: Int) {
+        val context = requireContext()
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        // Create a unique request code for the PendingIntent
+        val requestCode = (hour * 100) + minute
+
+        // Create an intent for the broadcast receiver
+        val intent = Intent(context, PrayerModeReceiver::class.java).apply {
+            action = "com.example.autosilentapp.ACTION_PRAYER_SILENT_MODE"
+        }
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            requestCode,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        // Create a calendar object and set the alarm time
+        val calendar = Calendar.getInstance().apply {
+            timeInMillis = System.currentTimeMillis()
+            set(Calendar.HOUR_OF_DAY, hour)
+            set(Calendar.MINUTE, minute)
+            set(Calendar.SECOND, 0)
+        }
+
+        // Check if the alarm time is in the past, if so, add a day to the calendar
+        val currentTime = System.currentTimeMillis()
+        if (calendar.timeInMillis < currentTime) {
+            calendar.add(Calendar.DAY_OF_YEAR, 1)
+        }
+        Log.d("prayerTime", "start calender time Milli ----- ${calendar.timeInMillis}")
+
+        // Set the alarm using the AlarmManager
+        alarmManager.setExact(
+            AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent
+        )
+    }
+
+    private fun scheduleRingModeAlarm(hour: Int, minute: Int) {
+        val context = requireContext()
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        // Create a unique request code for the PendingIntent
+        val requestCode = (hour * 100) + minute
+
+        val ringModeIntent = Intent(context, PrayerModeReceiver::class.java).apply {
+            action = "com.example.autosilentapp.ACTION_PRAYER_RING_MODE"
+        }
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            requestCode,
+            ringModeIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        // Create a calendar object and set the alarm time
+        val calendar = Calendar.getInstance().apply {
+            timeInMillis = System.currentTimeMillis()
+            set(Calendar.HOUR_OF_DAY, hour)
+            set(Calendar.MINUTE, minute)
+            set(Calendar.SECOND, 0)
+        }
+
+        // Check if the alarm time is in the past, if so, add a day to the calendar
+        val currentTime = System.currentTimeMillis()
+        if (calendar.timeInMillis < currentTime) {
+            calendar.add(Calendar.DAY_OF_YEAR, 1)
+        }
+        Log.d("prayerTime", "end calender time Milli ----- ${calendar.timeInMillis}")
+
+        alarmManager.setExact(
+            AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent
+        )
     }
 }
 

@@ -5,10 +5,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import com.example.autosilentapp.databinding.ActivityMainBinding
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
+    private lateinit var timeDB: TimeDB
+    private lateinit var timeDao: PrayerTimesDao
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -42,6 +46,15 @@ class MainActivity : AppCompatActivity() {
                 }
                 else -> false
             }
+        }
+        timeDB = TimeDB.getDatabase(applicationContext)
+        timeDao = timeDB.prayerTimesDao()
+        GlobalScope.launch {
+            timeDao.insertPrayerTimes(PrayerTimesEntity(PrayerName = "fajar", startTime = "4:20", endTime = "4:40"))
+            timeDao.insertPrayerTimes(PrayerTimesEntity(PrayerName = "zuhr", startTime = "13:20", endTime = "13:40"))
+            timeDao.insertPrayerTimes(PrayerTimesEntity(PrayerName = "asr", startTime = "17:50", endTime = "18:15"))
+            timeDao.insertPrayerTimes(PrayerTimesEntity(PrayerName = "maghrib", startTime = "19:20", endTime = "19:40"))
+            timeDao.insertPrayerTimes(PrayerTimesEntity(PrayerName = "isha", startTime = "21:05", endTime = "21:30"))
         }
     }
 }

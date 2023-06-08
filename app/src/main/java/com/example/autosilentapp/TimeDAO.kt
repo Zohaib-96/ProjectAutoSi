@@ -20,3 +20,11 @@ interface TimeDao {
     @Query("SELECT * FROM time_record ORDER BY id DESC LIMIT 1")
     suspend fun getRecentTime(): TimeEntities
 }
+@Dao
+interface PrayerTimesDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertPrayerTimes(prayerTimes: PrayerTimesEntity)
+
+    @Query("SELECT * FROM prayer_times")
+    suspend fun getAllPrayerTimes(): List<PrayerTimesEntity>
+}

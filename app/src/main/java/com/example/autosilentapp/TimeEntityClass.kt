@@ -19,3 +19,11 @@ data class TimeEntities(
     @ColumnInfo(name = "endTime") val endTime: String,
 
     ) : Parcelable
+
+@Entity(tableName = "prayer_times")
+data class PrayerTimesEntity(
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @ColumnInfo(name = "prayerName" ) val PrayerName: String,
+    @ColumnInfo(name = "startTime" ) val startTime: String,
+    @ColumnInfo(name = "endTIme" ) val endTime: String,
+)
