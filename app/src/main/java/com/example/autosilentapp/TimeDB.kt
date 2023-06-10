@@ -6,12 +6,10 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 
-@Database(entities = [TimeEntities::class,PrayerTimesEntity::class], version = 1, exportSchema = false)
+@Database(entities = [TimeEntities::class], version = 1, exportSchema = false)
 abstract class TimeDB: RoomDatabase() {
 
     abstract fun TimeDao(): TimeDao
-    abstract fun prayerTimesDao(): PrayerTimesDao
-
     companion object {
         @Volatile
         private var INSTANCE: TimeDB? = null

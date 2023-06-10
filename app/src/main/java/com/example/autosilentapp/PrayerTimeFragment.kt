@@ -1,23 +1,31 @@
 package com.example.autosilentapp
 
+import android.location.Address
+import android.location.Geocoder
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
+import com.android.volley.Request
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
 import com.example.autosilentapp.databinding.FragmentPrayerTimeBinding
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.json.JSONArray
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class PrayerTimeFragment : Fragment() {
 
     lateinit var binding: FragmentPrayerTimeBinding
-    private lateinit var timeDB: TimeDB
-    private lateinit var timeDao: PrayerTimesDao
+    var simpleDateFormat = SimpleDateFormat("hh:mm")
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -26,35 +34,52 @@ class PrayerTimeFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_prayer_time, container, false)
 
-        bindView()
-
+        binding.seatchBtn.setOnClickListener {
+            loadData()
+        }
         return binding.root
     }
+    private fun loadData() {
+        val geocoder = Geocoder(requireContext())
+        val addressList: List<Address>?
+        try {
+            addressList = geocoder.getFromLocationName(binding.edtSearch.text.toString(), 5)
+            if (addressList != null) {
+                val doubleLat = addressList[0].latitude
+                val doubleLong = addressList[0].longitude
+                val queue = Volley.newRequestQueue(requireContext())
+                val url =
+                    "https://api.aladhan.com/v1/calendar?latitude=$doubleLat&longitude=$doubleLong"
 
-    private fun bindView() {
-        GlobalScope.launch {
-            timeDB = TimeDB.getDatabase(requireContext())
-            timeDao = timeDB.prayerTimesDao()
-            val prayerTimes = timeDao.getAllPrayerTimes()
-
-            val timeFormat24 = SimpleDateFormat("HH:mm", Locale.getDefault())
-            val timeFormat12 = SimpleDateFormat("hh:mm a", Locale.getDefault())
-
-            binding.tvFajarTimeStart.text = convertTimeTo12HourFormat(prayerTimes[0].startTime, timeFormat24, timeFormat12)
-            binding.tvFajarTimeEnd.text = convertTimeTo12HourFormat(prayerTimes[0].endTime, timeFormat24, timeFormat12)
-            binding.tvZuhrTimeStart.text = convertTimeTo12HourFormat(prayerTimes[1].startTime, timeFormat24, timeFormat12)
-            binding.tvZuhrTimeEnd.text = convertTimeTo12HourFormat(prayerTimes[1].endTime, timeFormat24, timeFormat12)
-            binding.tvAsrTimeStart.text = convertTimeTo12HourFormat(prayerTimes[2].startTime, timeFormat24, timeFormat12)
-            binding.tvAsrTimeEnd.text = convertTimeTo12HourFormat(prayerTimes[2].endTime, timeFormat24, timeFormat12)
-            binding.tvMaghribTimeStart.text = convertTimeTo12HourFormat(prayerTimes[3].startTime, timeFormat24, timeFormat12)
-            binding.tvMaghribTimeEnd.text = convertTimeTo12HourFormat(prayerTimes[3].endTime, timeFormat24, timeFormat12)
-            binding.tvIshaTimeStart.text = convertTimeTo12HourFormat(prayerTimes[4].startTime, timeFormat24, timeFormat12)
-            binding.tvIshaTimeEnd.text = convertTimeTo12HourFormat(prayerTimes[4].endTime, timeFormat24, timeFormat12)
-
+                val jsonObjectRequest =
+                    JsonObjectRequest(
+                        Request.Method.GET, url, null,
+                        { response ->
+                            // Handle the response here
+                            val jsonDate: JSONArray = response.getJSONArray("data")
+                            val timing = jsonDate.getJSONObject(0)
+                            val tim = timing.getJSONObject("timings")
+                            binding.tvFajar.text = simpleDateFormat.parse(tim.getString("Fajr"))
+                                ?.let { simpleDateFormat.format(it) }
+                            binding.tvZuhr.text = simpleDateFormat.parse(tim.getString("Dhuhr"))
+                                ?.let { simpleDateFormat.format(it) }
+                            binding.tvAsr.text = simpleDateFormat.parse(tim.getString("Asr"))
+                                ?.let { simpleDateFormat.format(it) }
+                            binding.tvMaghrib.text =
+                                simpleDateFormat.parse(tim.getString("Maghrib"))
+                                    ?.let { simpleDateFormat.format(it) }
+                            binding.tvIsha.text = simpleDateFormat.parse(tim.getString("Isha"))
+                                ?.let { simpleDateFormat.format(it) }
+                        },
+                        { error ->
+                            Log.d("error message is " , error.message!!)
+                            // Handle error case here
+                        }
+                    )
+                queue.add(jsonObjectRequest)
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
-    }
-    private fun convertTimeTo12HourFormat(time: String, inputFormat: SimpleDateFormat, outputFormat: SimpleDateFormat): String {
-        val date = inputFormat.parse(time)
-        return outputFormat.format(date)
     }
 }

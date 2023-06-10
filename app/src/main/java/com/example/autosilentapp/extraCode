@@ -1,174 +1,214 @@
+    private lateinit var timeDB: TimeDB
+    private lateinit var timeDao: PrayerTimesDao
+    bindView()
 
-package com.example.autosilentapp
+ private fun bindView() {
+        GlobalScope.launch {
+            timeDB = TimeDB.getDatabase(requireContext())
+            timeDao = timeDB.prayerTimesDao()
+            val prayerTimes = timeDao.getAllPrayerTimes()
 
-import android.app.Dialog
-import android.app.TimePickerDialog
-import android.os.Bundle
-import android.text.format.DateFormat
-import android.widget.TimePicker
-import androidx.fragment.app.DialogFragment
-import java.util.*
+            val timeFormat24 = SimpleDateFormat("HH:mm", Locale.getDefault())
+            val timeFormat12 = SimpleDateFormat("hh:mm a", Locale.getDefault())
 
-class TimePickerFragment : DialogFragment(), TimePickerDialog.OnTimeSetListener {
+            binding.tvFajarTimeStart.text = convertTimeTo12HourFormat(prayerTimes[0].endTime, timeFormat24, timeFormat12)
+            binding.tvFajarTimeEnd.text = convertTimeTo12HourFormat(prayerTimes[0].startTime, timeFormat24, timeFormat12)
+            binding.tvZuhrTimeStart.text = convertTimeTo12HourFormat(prayerTimes[1].endTime, timeFormat24, timeFormat12)
+            binding.tvZuhrTimeEnd.text = convertTimeTo12HourFormat(prayerTimes[1].startTime, timeFormat24, timeFormat12)
+            binding.tvAsrTimeStart.text = convertTimeTo12HourFormat(prayerTimes[2].endTime, timeFormat24, timeFormat12)
+            binding.tvAsrTimeEnd.text = convertTimeTo12HourFormat(prayerTimes[2].startTime, timeFormat24, timeFormat12)
+            binding.tvMaghribTimeStart.text = convertTimeTo12HourFormat(prayerTimes[3].endTime, timeFormat24, timeFormat12)
+            binding.tvMaghribTimeEnd.text = convertTimeTo12HourFormat(prayerTimes[3].startTime, timeFormat24, timeFormat12)
+            binding.tvIshaTimeStart.text = convertTimeTo12HourFormat(prayerTimes[4].endTime, timeFormat24, timeFormat12)
+            binding.tvIshaTimeEnd.text = convertTimeTo12HourFormat(prayerTimes[4].startTime, timeFormat24, timeFormat12)
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        // Use the current time as the default values for the picker
-        val c = Calendar.getInstance()
-        val hour = c.get(Calendar.HOUR_OF_DAY)
-        val minute = c.get(Calendar.MINUTE)
-
-        // Create a new instance of TimePickerDialog and return it
-        return TimePickerDialog(activity, this, hour, minute, DateFormat.is24HourFormat(activity))
+        }
+    }
+    private fun convertTimeTo12HourFormat(time: String, inputFormat: SimpleDateFormat, outputFormat: SimpleDateFormat): String {
+        val date = inputFormat.parse(time)
+        return outputFormat.format(date)
     }
 
-    override fun onTimeSet(view: TimePicker, hourOfDay: Int, minute: Int) {
-        // Do something with the time chosen by the user
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+class PrayerModeReceiver: BroadcastReceiver(){
+    override fun onReceive(context: Context, intent: Intent) {
+        Log.d("PrayerModeReceiver", "broadcast Received ")
+        val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        when(intent.action){
+            "com.example.autosilentapp.ACTION_PRAYER_SILENT_MODE" ->{
+                audioManager.ringerMode = AudioManager.RINGER_MODE_VIBRATE
+            }
+            "com.example.autosilentapp.ACTION_PRAYER_RING_MODE" ->{
+                audioManager.ringerMode = AudioManager.RINGER_MODE_NORMAL
+            }
+        }
     }
 }
-////////////////////////////////////////////////////////////////////////////////
 
-import android.content.Context
-import android.media.AudioManager
-import android.os.Build
-import androidx.annotation.RequiresApi
-import androidx.core.util.Pair
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
-import java.util.*
-import java.util.concurrent.TimeUnit
 
-class com.example.autosilentapp.MyAlarmManager(private val context: Context) {
-    private val timeDao: TimeDao by lazy { AppDatabase.getInstance(context).timeDao() }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    companion object {
-        private const val WORK_TAG = "silencePhoneWork"
-    }
+        getPrayerTimes()
+ ////////////////////////// sitting Alarm for Prayer //////////////////////////
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun startAlarm() {
-        CoroutineScope(Dispatchers.IO).launch {
-            val (startTime, endTime) = getTimes()
-            val startTimeInMinutes = getTimeInMinutes(startTime)
-            val endTimeInMinutes = getTimeInMinutes(endTime)
-            val currentTimeInMinutes = getTimeInMinutes(getCurrentTime())
-
-            val shouldSilence = when {
-                startTimeInMinutes > endTimeInMinutes -> {
-                    // Start and end time are on different days
-                    currentTimeInMinutes in (startTimeInMinutes..1440) || currentTimeInMinutes in (0..endTimeInMinutes)
-                }
-                else -> {
-                    // Start and end time are on the same day
-                    currentTimeInMinutes in (startTimeInMinutes..endTimeInMinutes)
-                }
-            }
-
-            if (shouldSilence) {
-                setSilentMode()
-                scheduleEndAlarm(endTime)
-            } else {
-                restoreSoundMode()
-                cancelEndAlarm()
+    private fun getPrayerTimes() {
+        val sharedPreferences =
+            requireContext().getSharedPreferences("AppPreferences", Context.MODE_PRIVATE)
+        val isPrayerTimesLoaded = sharedPreferences.getBoolean("isPrayerTimesLoaded", false)
+        if (!isPrayerTimesLoaded) {
+            val timeDao = database.prayerTimesDao()
+            lifecycleScope.launch {
+                val prayerTimes: List<PrayerTimesEntity> = timeDao.getAllPrayerTimes()
+                setAlarmForPrayerTimes(prayerTimes)
+                sharedPreferences.edit().putBoolean("isPrayerTimesLoaded", true).apply()
             }
         }
     }
 
-    private suspend fun getTimes(): Pair<String, String> {
-        return Pair(timeDao.getStartTime(), timeDao.getEndTime())
+    private fun setAlarmForPrayerTimes(prayerTimes: List<PrayerTimesEntity>) {
+        for (prayerTime in prayerTimes) {
+            Log.d("prayerTime", "in for loop time ----- $prayerTime")
+
+            // Set alarm for prayer start time
+            val timeStartParts = prayerTime.startTime.split(":")
+            Log.d("prayerTime", "start time split ----- $timeStartParts")
+
+            val startTimeHour = timeStartParts[0].toInt()
+            val startTimeMin = timeStartParts[1].toInt()
+            scheduleSilentModeAlarm(startTimeHour, startTimeMin)
+
+            // Set alarm for prayer end time
+            val timeEndParts = prayerTime.endTime.split(":")
+            Log.d("prayerTime", "end time split ----- $timeEndParts")
+
+            val endTimeHour = timeEndParts[0].toInt()
+            val endTimeMin = timeEndParts[1].toInt()
+            scheduleRingModeAlarm(endTimeHour, endTimeMin)
+        }
     }
 
-    private fun getCurrentTime(): String {
-        val formatter = SimpleDateFormat("HH:mm", Locale.getDefault())
-        return formatter.format(Date())
-    }
+    private fun scheduleSilentModeAlarm(hour: Int, minute: Int) {
+        val context = requireContext()
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        // Create a unique request code for the PendingIntent
+        val requestCode = (hour * 100) + minute
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun getTimeInMinutes(timeString: String): Int {
-        val time = LocalTime.parse(timeString, DateTimeFormatter.ofPattern("HH:mm"))
-        return time.hour * 60 + time.minute
-    }
+        // Create an intent for the broadcast receiver
+        val intent = Intent(context, PrayerModeReceiver::class.java).apply {
+            action = "com.example.autosilentapp.ACTION_PRAYER_SILENT_MODE"
+        }
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            requestCode,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
 
-    private fun setSilentMode() {
-        val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        audioManager.ringerMode = AudioManager.RINGER_MODE_SILENT
-    }
+        // Create a calendar object and set the alarm time
+        val calendar = Calendar.getInstance().apply {
+            timeInMillis = System.currentTimeMillis()
+            set(Calendar.HOUR_OF_DAY, hour)
+            set(Calendar.MINUTE, minute)
+            set(Calendar.SECOND, 0)
+        }
 
-    private fun restoreSoundMode() {
-        val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        audioManager.ringerMode = AudioManager.RINGER_MODE_NORMAL
-    }
+        // Check if the alarm time is in the past, if so, add a day to the calendar
+        val currentTime = System.currentTimeMillis()
+        if (calendar.timeInMillis < currentTime) {
+            calendar.add(Calendar.DAY_OF_YEAR, 1)
+        }
+        Log.d("prayerTime", "start calender time Milli ----- ${calendar.timeInMillis}")
 
-    private fun scheduleEndAlarm(endTime: String) {
-        val endMillis = getMillisFromTimeString(endTime)
-        val delayMillis = endMillis - System.currentTimeMillis()
-
-        val workRequest = PeriodicWorkRequestBuilder<EndAlarmWorker>(
-            1, TimeUnit.DAYS
-        ).setInitialDelay(delayMillis, TimeUnit.MILLISECONDS)
-            .addTag(WORK_TAG)
-            .build()
-
-        WorkManager.getInstance(context).enqueueUniquePeriodicWork(
-            WORK_TAG,
-            ExistingPeriodicWorkPolicy.REPLACE,
-            workRequest
+        // Set the alarm using the AlarmManager
+        alarmManager.setRepeating(
+            AlarmManager.RTC_WAKEUP, calendar.timeInMillis, AlarmManager.INTERVAL_DAY, pendingIntent
         )
     }
 
-    private fun cancelEndAlarm() {
-        WorkManager.getInstance(context).cancelAllWorkByTag(WORK_TAG)
+    private fun scheduleRingModeAlarm(hour: Int, minute: Int) {
+        val context = requireContext()
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        // Create a unique request code for the PendingIntent
+        val requestCode = (hour * 100) + minute
+
+        val ringModeIntent = Intent(context, PrayerModeReceiver::class.java).apply {
+            action = "com.example.autosilentapp.ACTION_PRAYER_RING_MODE"
+        }
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            requestCode,
+            ringModeIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        // Create a calendar object and set the alarm time
+        val calendar = Calendar.getInstance().apply {
+            timeInMillis = System.currentTimeMillis()
+            set(Calendar.HOUR_OF_DAY, hour)
+            set(Calendar.MINUTE, minute)
+            set(Calendar.SECOND, 0)
+        }
+
+        // Check if the alarm time is in the past, if so, add a day to the calendar
+        val currentTime = System.currentTimeMillis()
+        if (calendar.timeInMillis < currentTime) {
+            calendar.add(Calendar.DAY_OF_YEAR, 1)
+        }
+        Log.d("prayerTime", "end calender time Milli ----- ${calendar.timeInMillis}")
+
+        alarmManager.setRepeating(
+            AlarmManager.RTC_WAKEUP, calendar.timeInMillis, AlarmManager.INTERVAL_DAY, pendingIntent
+        )
     }
 
-    private fun getMillisFromTimeString(timeString: String): Long {
-        val formatter = SimpleDateFormat("HH:mm", Locale.getDefault())
-        val date = formatter.parse(timeString)
-        return date.time
-    }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private lateinit var timeDB: TimeDB
+    private lateinit var timeDao: PrayerTimesDao
+
+    timeDB = TimeDB.getDatabase(applicationContext)
+        timeDao = timeDB.prayerTimesDao()
+        GlobalScope.launch {
+            timeDao.insertPrayerTimes(PrayerTimesEntity(PrayerName = "fajar", startTime = "4:15", endTime = "4:40"))
+            timeDao.insertPrayerTimes(PrayerTimesEntity(PrayerName = "zuhr", startTime = "13:15", endTime = "13:40"))
+            timeDao.insertPrayerTimes(PrayerTimesEntity(PrayerName = "asr", startTime = "17:45", endTime = "18:10"))
+            timeDao.insertPrayerTimes(PrayerTimesEntity(PrayerName = "maghrib", startTime = "19:15", endTime = "19:45"))
+            timeDao.insertPrayerTimes(PrayerTimesEntity(PrayerName = "isha", startTime = "21:00", endTime = "21:30"))
+        }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+     ,PrayerTimesEntity::class
+     abstract fun prayerTimesDao(): PrayerTimesDao
+
+
+@Entity(tableName = "prayer_times")
+data class PrayerTimesEntity(
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @ColumnInfo(name = "prayerName" ) val PrayerName: String,
+    @ColumnInfo(name = "startTime" ) val startTime: String,
+    @ColumnInfo(name = "endTIme" ) val endTime: String,
+)
+
+@Dao
+interface PrayerTimesDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertPrayerTimes(prayerTimes: PrayerTimesEntity)
+
+    @Query("SELECT * FROM prayer_times")
+    suspend fun getAllPrayerTimes(): List<PrayerTimesEntity>
 }
 
 
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
 
-   mediaPlayer.start()
-                binding.btnStopMusic.setOnClickListener {
-                    mediaPlayer.stop()
-                    binding.btnStopMusic.visibility = View.INVISIBLE
-                }
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
-  // get references to the views in the dialog
-        val hoursPicker = dialog.findViewById<NumberPicker>(R.id.hours_picker)
-        val minutesPicker = dialog.findViewById<NumberPicker>(R.id.minutes_picker)
-        val secondsPicker = dialog.findViewById<NumberPicker>(R.id.seconds_picker)
-        val addButton = dialog.findViewById<Button>(R.id.add_button)
-
-        // set up the add button click listener
-        addButton.setOnClickListener {
-
-            // Set the minimum and maximum values for the NumberPicker widgets
-            hoursPicker.minValue = 0
-            hoursPicker.maxValue = 23
-            minutesPicker.minValue = 0
-            minutesPicker.maxValue = 59
-            secondsPicker.minValue = 0
-            secondsPicker.maxValue = 59
-
-
-            val hours = hoursPicker.value
-            val minutes = minutesPicker.value
-            val seconds = secondsPicker.value
-
-            val timeInMillis = (hours * 3600 + minutes * 60 + seconds) * 1000L
-            // dismiss the dialog
-            dialog.dismiss()
-        }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////

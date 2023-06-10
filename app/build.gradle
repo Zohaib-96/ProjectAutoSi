@@ -80,4 +80,7 @@ dependencies {
     implementation 'com.github.fornewid:neumorphism:0.3.2'
     implementation 'com.github.otmaneTheDev:NeumorphismClock:1.0'
 
+
+    implementation "com.android.volley:volley:1.2.1"
+
 }
