@@ -8,60 +8,245 @@
         android:layout_height="match_parent"
         android:background="@drawable/backgroundimg"
         tools:context=".PrayerTimeFragment">
-
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-
-            <EditText
-                android:id="@+id/edtSearch"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:hint="Search" />
-
-            <Button
-                android:id="@+id/seatchBtn"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center_horizontal"
-                android:hint="Search" />
+            android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/tvFajar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30sp"
+                android:layout_marginTop="30sp"
+                android:text="Prayer Time"
+                android:textColor="@color/dark_blue"
+                android:textSize="30sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/Seachlayout"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:textSize="30sp" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="70dp"
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/edtSearch"
+                    android:layout_width="200dp"
+                    android:layout_height="48dp"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginLeft="20sp"
+                    android:layout_marginTop="100dp"
+                    android:background="@drawable/backgroud_shape"
+                    android:gravity="center"
+                    android:hint="Enter City" />
+
+                <Button
+                    android:id="@+id/btnSearch"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="100dp"
+                    android:backgroundTint="@color/dark_blue"
+                    android:gravity="center"
+                    android:text="Search" />
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/tvZuhr"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:text="zuhr"
-                android:textSize="30sp" />
+                android:id="@+id/location_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Peshawar"
+                android:layout_below="@+id/Seachlayout"
+                android:textSize="30sp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20sp"
+                android:layout_marginBottom="10dp"
+                android:textStyle="bold"
+                />
 
-            <TextView
-                android:id="@+id/tvAsr"
+            <LinearLayout
+                android:id="@+id/Fajrlayout"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:text="asr"
-                android:textSize="30sp" />
+                android:layout_height="wrap_content"
+                android:layout_below="@id/location_name"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/backgroud_shape"
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/tvMaghrib"
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="48dp"
+                    android:layout_marginLeft="30dp"
+                    android:src="@drawable/fajr" />
+
+                <TextView
+                    android:id="@+id/titleFajr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:paddingStart="70dp"
+                    android:paddingTop="9dp"
+                    android:text="Fajr"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvFajar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="85dp"
+                    android:text="00:00"
+                    android:textSize="20sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/Zuharlayout"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:text="maghrib"
-                android:textSize="30sp" />
+                android:layout_height="wrap_content"
+                android:layout_below="@id/Fajrlayout"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/backgroud_shape"
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/tvIsha"
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="48dp"
+                    android:layout_marginLeft="30dp"
+                    android:src="@drawable/zuhr" />
+
+                <TextView
+                    android:id="@+id/titleZuhar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:paddingLeft="70dp"
+                    android:paddingTop="9dp"
+                    android:text="Zuhr"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvZuhr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_marginLeft="80dp"
+                    android:text="00:00"
+                    android:textSize="20sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/AsarLayout"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:text="isha"
-                android:textSize="30sp" />
+                android:layout_height="wrap_content"
+                android:layout_below="@id/Zuharlayout"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/backgroud_shape"
+                android:orientation="horizontal">
 
-        </LinearLayout>
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="48dp"
+                    android:layout_marginLeft="30dp"
+                    android:src="@drawable/asr" />
+
+                <TextView
+                    android:id="@+id/titleAsar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:paddingLeft="70sp"
+                    android:paddingTop="9dp"
+                    android:text="Asar"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvAsr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_below="@+id/titleAsar"
+                    android:layout_marginLeft="80dp"
+                    android:gravity="center"
+                    android:text="00:00"
+                    android:textSize="20sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/MaghribLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/AsarLayout"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/backgroud_shape"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="48dp"
+                    android:layout_marginLeft="30dp"
+                    android:src="@drawable/maghrib" />
+
+                <TextView
+                    android:id="@+id/titleMaghrib"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:gravity="center"
+                    android:paddingLeft="70dp"
+                    android:text="Maghrib"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvMaghrib"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_marginLeft="50dp"
+                    android:gravity="center"
+                    android:text="00:00"
+                    android:textSize="20sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/IshaLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/MaghribLayout"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/backgroud_shape"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="48dp"
+                    android:layout_marginLeft="30dp"
+                    android:src="@drawable/isha" />
+
+                <TextView
+                    android:id="@+id/titleIsha"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:gravity="center"
+                    android:paddingLeft="70dp"
+                    android:text="Isha"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvIsha"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_below="@+id/titleIsha"
+                    android:layout_marginStart="85dp"
+                    android:gravity="center"
+                    android:text="00:00"
+                    android:textSize="20sp" />
+            </LinearLayout>
+        </RelativeLayout>
     </FrameLayout>
 </layout>

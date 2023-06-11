@@ -17,6 +17,7 @@ import com.example.autosilentapp.databinding.FragmentPrayerTimeBinding
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.json.JSONArray
+import org.json.JSONException
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -34,52 +35,92 @@ class PrayerTimeFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_prayer_time, container, false)
 
-        binding.seatchBtn.setOnClickListener {
+        // Call the loadData() function to fetch and display default prayer times for Peshawar
+        loadData()
+        binding.btnSearch.setOnClickListener {
             loadData()
+            val locationName = binding.edtSearch.text.toString()
+            binding.locationName.text = locationName
         }
         return binding.root
     }
     private fun loadData() {
-        val geocoder = Geocoder(requireContext())
-        val addressList: List<Address>?
-        try {
-            addressList = geocoder.getFromLocationName(binding.edtSearch.text.toString(), 5)
-            if (addressList != null) {
-                val doubleLat = addressList[0].latitude
-                val doubleLong = addressList[0].longitude
-                val queue = Volley.newRequestQueue(requireContext())
-                val url =
-                    "https://api.aladhan.com/v1/calendar?latitude=$doubleLat&longitude=$doubleLong"
+        // Default location coordinates for Peshawar
+        val defaultLat = 34.0150
+        val defaultLong = 71.5250
 
-                val jsonObjectRequest =
-                    JsonObjectRequest(
-                        Request.Method.GET, url, null,
-                        { response ->
-                            // Handle the response here
-                            val jsonDate: JSONArray = response.getJSONArray("data")
-                            val timing = jsonDate.getJSONObject(0)
-                            val tim = timing.getJSONObject("timings")
-                            binding.tvFajar.text = simpleDateFormat.parse(tim.getString("Fajr"))
-                                ?.let { simpleDateFormat.format(it) }
-                            binding.tvZuhr.text = simpleDateFormat.parse(tim.getString("Dhuhr"))
-                                ?.let { simpleDateFormat.format(it) }
-                            binding.tvAsr.text = simpleDateFormat.parse(tim.getString("Asr"))
-                                ?.let { simpleDateFormat.format(it) }
-                            binding.tvMaghrib.text =
-                                simpleDateFormat.parse(tim.getString("Maghrib"))
-                                    ?.let { simpleDateFormat.format(it) }
-                            binding.tvIsha.text = simpleDateFormat.parse(tim.getString("Isha"))
-                                ?.let { simpleDateFormat.format(it) }
-                        },
-                        { error ->
-                            Log.d("error message is " , error.message!!)
-                            // Handle error case here
-                        }
-                    )
-                queue.add(jsonObjectRequest)
+        // Check if the user has entered a search query
+        val searchQuery = binding.edtSearch.text.toString()
+        if (searchQuery.isNotEmpty()) {
+            // User has entered a search query, make API call for the searched location
+            val geocoder = Geocoder(requireContext())
+            val addressList: List<Address>?
+            try {
+                addressList = geocoder.getFromLocationName(searchQuery, 5)
+                if (addressList != null && addressList.isNotEmpty()) {
+                    val searchedLat = addressList[0].latitude
+                    val searchedLong = addressList[0].longitude
+                    fetchPrayerTimes(searchedLat, searchedLong)
+                } else {
+                    // Handle case when no matching location is found
+                    displayDefaultPrayerTimes()
+                }
+            } catch (e: IOException) {
+                e.printStackTrace()
+                // Handle IO error
             }
-        } catch (e: IOException) {
-            e.printStackTrace()
+        } else {
+            // No search query, fetch prayer times for the default location (Peshawar)
+            fetchPrayerTimes(defaultLat, defaultLong)
         }
+    }
+    private fun fetchPrayerTimes(latitude: Double, longitude: Double) {
+        val queue = Volley.newRequestQueue(requireContext())
+        val url = "https://api.aladhan.com/v1/calendar?latitude=$latitude&longitude=$longitude"
+
+        val jsonObjectRequest = JsonObjectRequest(
+            Request.Method.GET, url, null,
+            { response ->
+                try {
+                    val jsonDate: JSONArray = response.getJSONArray("data")
+                    val timing = jsonDate.getJSONObject(0)
+                    val tim = timing.getJSONObject("timings")
+
+                    // Update prayer times
+                    binding.tvFajar.text = simpleDateFormat.parse(tim.getString("Fajr"))
+                        ?.let { simpleDateFormat.format(it) }
+                    binding.tvZuhr.text = simpleDateFormat.parse(tim.getString("Dhuhr"))
+                        ?.let { simpleDateFormat.format(it) }
+                    binding.tvAsr.text = simpleDateFormat.parse(tim.getString("Asr"))
+                        ?.let { simpleDateFormat.format(it) }
+                    binding.tvMaghrib.text = simpleDateFormat.parse(tim.getString("Maghrib"))
+                        ?.let { simpleDateFormat.format(it) }
+                    binding.tvIsha.text = simpleDateFormat.parse(tim.getString("Isha"))
+                        ?.let { simpleDateFormat.format(it) }
+
+                    // Handle the response here
+                    // You can access the response using the 'response' parameter
+                    // Example: val data = response.getJSONObject("data")
+                } catch (e: JSONException) {
+                    e.printStackTrace()
+                    // Handle JSON parsing error
+                    displayDefaultPrayerTimes()
+                }
+            },
+            { error ->
+                Log.d("the error is ", error.message!!)
+                // Handle error case here
+                // You can access the error using the 'error' parameter
+                displayDefaultPrayerTimes()
+            }
+        )
+
+        queue.add(jsonObjectRequest)
+    }
+    private fun displayDefaultPrayerTimes() {
+        val defaultLat = 34.0150
+        val defaultLong = 71.5250
+
+        fetchPrayerTimes(defaultLat, defaultLong)
     }
 }
