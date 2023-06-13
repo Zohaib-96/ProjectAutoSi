@@ -15,6 +15,6 @@
 
     <item
         android:id="@+id/PrayerTineFragment"
-        android:icon="@drawable/timer"
+        android:icon="@drawable/prayer_icon"
         android:title="Timer" />
 </menu>
